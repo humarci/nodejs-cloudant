@@ -24,7 +24,7 @@ const CookieTokenManager = require('../lib/tokens/CookieTokenManager');
  * Cookie Authentication plugin.
  */
 class CookiePlugin extends BasePlugin {
-  constructor(client, cfg) {
+  constructor(client, cfg, reqDefaults) {
     cfg = Object.assign({
       autoRenew: true,
       errorOnNoCreds: true
@@ -45,8 +45,13 @@ class CookiePlugin extends BasePlugin {
 
     this._jar = request.jar();
 
+    if (reqDefaults !== undefined || reqDefaults.agent !== undefined) {
+      // remove keepAlive agent reference not to keep it in memory
+      delete reqDefaults.agent;
+    }
+
     this._tokenManager = new CookieTokenManager(
-      client,
+      reqDefaults,
       this._jar,
       u.format(sessionUrl, {auth: false}),
       // Extract creds from URL and decode

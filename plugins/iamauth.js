@@ -24,7 +24,7 @@ const IAMTokenManager = require('../lib/tokens/IamTokenManager');
  * IAM Authentication plugin.
  */
 class IAMPlugin extends BasePlugin {
-  constructor(client, cfg) {
+  constructor(client, cfg, reqDefaults) {
     if (typeof cfg.iamApiKey === 'undefined') {
       throw new Error('Missing IAM API key from configuration');
     }
@@ -42,8 +42,13 @@ class IAMPlugin extends BasePlugin {
 
     this._jar = request.jar();
 
+    if (reqDefaults !== undefined || reqDefaults.agent !== undefined) {
+      // remove keepAlive agent reference not to keep it in memory
+      delete reqDefaults.agent;
+    }
+
     this._tokenManager = new IAMTokenManager(
-      client,
+      reqDefaults,
       this._jar,
       u.format(sessionUrl, {auth: false}),
       cfg.iamTokenUrl,

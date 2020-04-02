@@ -23,6 +23,7 @@ class TokenManagerRenewSuccess extends TokenManager {
   constructor() {
     super();
     this._getTokenCallCount = 0;
+    this._sessionUrl = 'https://someurl';
   }
 
   _getToken(callback) {
@@ -42,6 +43,7 @@ class TokenManagerRenewFailure extends TokenManager {
   constructor() {
     super();
     this._getTokenCallCount = 0;
+    this._sessionUrl = 'http://someurl';
   }
 
   // mock failed token renewal
